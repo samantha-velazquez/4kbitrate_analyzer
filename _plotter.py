@@ -2,7 +2,6 @@ import matplotlib.lines as mlines
 import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
-
 from _utils import get_mbit_str, get_pretty_codec_name
 
 

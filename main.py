@@ -2,13 +2,11 @@ import os
 from tkinter import *
 from tkinter import filedialog, messagebox
 from _utils import get_duration, get_framerate_float
-from tkinter import PhotoImage
 from _bitrate_analyzer import analyze_bitrate
 from _plotter import plot_results
 from pathlib import Path
 from tqdm import tqdm
 from math import trunc
-from PIL import ImageTk, Image
  
  
 root = Tk()

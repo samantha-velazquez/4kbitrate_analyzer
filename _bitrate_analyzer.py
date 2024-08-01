@@ -1,11 +1,9 @@
-import io
-import os
+import io, os
 from math import trunc
 from pathlib import Path
 import multiprocessing
 import subprocess
 from tqdm import tqdm
-
 from _file_parser import FileParser
 from _utils import get_framerate_float, get_duration
 
