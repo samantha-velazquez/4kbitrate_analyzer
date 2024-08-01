@@ -1,12 +1,17 @@
-import os
 from tkinter import *
 from tkinter import filedialog
+from tkinter import messagebox
+from tkinter import StringVar
+import os
 from _utils import get_duration, get_framerate_float
+from tkinter import PhotoImage
 from _bitrate_analyzer import analyze_bitrate
 from _plotter import plot_results
-from pathlib import Path 
+from pathlib import Path
+import os
 from tqdm import tqdm
 from math import trunc
+from PIL import ImageTk, Image
  
  
 root = Tk()
@@ -18,20 +23,21 @@ username = StringVar()
 # create an entry and variable for the username.
 user_label = Label(root, text = 'Username', font=('calibre',10, 'bold'))
 user_label.grid()
-user_entry = Entry(root, textvariable=username, font=('calibre',10,'normal'))
-user_entry.grid(row=0, column=1)
+# user_entry = Entry(root, textvariable=username, font=('calibre',10,'normal'))
+# user_entry.grid(row=0, column=1)
  
  
  
 def CurSelet(evt):
     value = str(histbox.get(ACTIVE))
     # just a test to see if click functionality works
-    print(value + "hi")
+    # print(value + "hi")
     print(os.path.abspath(value))
     filedialog.askopenfilename(  
       title = "Select a file of any type",  
       filetypes = [("All files", "*.*")]  
       )  
+   
    
  
 histlabel = Label(root, text="History", font=('calibre',10, 'bold'))
@@ -39,28 +45,45 @@ histlabel.grid(column=0, row=3)
 histbox = Listbox(root)
 histbox.grid(column=0, row = 6)
 histbox.bind('<<ListboxSelect>>', CurSelet)
-
-file = StringVar()
-file.set('')
  
 def calcFiles():
-    print(os.getcwd())
-    user = username.get()
-    username.set("")
+   
+   
+   
+    # open file explorer
+    filename = filedialog.askopenfilename(initialdir="/Users", title="Select a File", filetypes=(("MP4 File", "*.mp4*"), ("All Files", "*.*")))
+   
+    if(filename[0] == "C"):
+        file_no_upath = filename[9:-1]
+        inst_1 = file_no_upath.find("/")
+        userFull = file_no_upath[0:inst_1]
+    else:
+        file_no_upath = filename[13:-1]
+        inst_1 = file_no_upath.find("/")
+        userFull = file_no_upath[0:inst_1]
+        print(userFull)
+   
+ 
     # set a path for the history
-    uPath = "/mnt/c/Users/" + user
+    uPath = "/mnt/c/Users/" + userFull
     fPath = uPath + "/BitRateHistory"
     if not os.path.exists(fPath):
         os.mkdir(fPath)
-    # open file explorer
-    filename = filedialog.askopenfilename(initialdir=uPath, title="Select a File", filetypes=(("MP4 File", "*.mp4*"), ("All Files", "*.*")))
+ 
+   
+    username.set(userFull)
+    user = username.get()
+ 
     json = analyze_bitrate(filename, user, 'json')
     # save json to history
     graph_filename = Path(filename).stem
+    print("graph_filename: " + graph_filename)
     plot_results(json, filename, graph_filename, user)
-
+    img_path = fPath + "/" + graph_filename + ".png"
+ 
     print(os.path.basename(filename))
-    print("graph_fiulename: " + graph_filename)
+   
+ 
     # get the file size from os
     vid_path = os.path.abspath(filename)
     vid_size = round(os.path.getsize(filename) / 1000000, 1)
@@ -75,8 +98,8 @@ def calcFiles():
     # create the history list
     folder_contents = os.listdir(fPath)
    
-    histbox.insert(END, os.path.basename(filename))
-   
+    for item in folder_contents:
+        histbox.insert(END, item)
  
    
     fps = get_framerate_float(vid_path)
@@ -87,7 +110,6 @@ def calcFiles():
    
  
     """""
-    img_path = fPath + "/" + graph_filename + ".png"
     print("image path: " + img_path)
     image =  PhotoImage(file=img_path)
     image_lbl = Label(root, image=image)
@@ -96,14 +118,6 @@ def calcFiles():
    
 calc_btn = Button(root, text = "Calculate", command = calcFiles)
 calc_btn.grid(row=0,column=2)
-
-dJSON_btn = Button(root, text = "Downlaod JSON")
-dJSON_btn.grid(row=8)
-
-dPNG_btn = Button(root, text = "Download PNG")
-dPNG_btn.grid(row=8,column=1)
-
  
  
 root.mainloop()
- 
