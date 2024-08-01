@@ -1,14 +1,11 @@
 from tkinter import *
-from tkinter import filedialog
-from tkinter import messagebox
-from tkinter import StringVar
+from tkinter import filedialog, messagebox
 import os
 from _utils import get_duration, get_framerate_float
 from tkinter import PhotoImage
 from _bitrate_analyzer import analyze_bitrate
 from _plotter import plot_results
 from pathlib import Path
-import os
 from tqdm import tqdm
 from math import trunc
 from PIL import ImageTk, Image
