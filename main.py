@@ -15,8 +15,7 @@ root = Tk()
 root.title("Bit Rate Calculator")
 root.geometry('600x400')
  
-username = StringVar()
- 
+
 # create an entry and variable for the username.
 user_label = Label(root, text = 'Username', font=('calibre',10, 'bold'))
 user_label.grid()
@@ -53,28 +52,21 @@ def calcFiles():
     print(file_no_upath)
     inst_1 = file_no_upath.find("/")
     print(inst_1)
-    userFull = file_no_upath[0:inst_1]
-    print(userFull)
+    user = file_no_upath[0:inst_1]
+    print(user)
    
  
     # set a path for the history
-    uPath = "/mnt/c/Users/" + userFull
+    uPath = "/mnt/c/Users/" + user
     fPath = uPath + "/BitRateHistory"
     if not os.path.exists(fPath):
         os.mkdir(fPath)
  
-   
-    username.set(userFull)
-    user = username.get()
- 
-    json = analyze_bitrate(filename, user, 'json')
+    json = analyze_bitrate(filename, fPath)
     # save json to history
     graph_filename = Path(filename).stem
     print("graph_filename: " + graph_filename)
     plot_results(json, filename, graph_filename, user)
-    img_path = fPath + "/" + graph_filename + ".png"
- 
-    print(os.path.basename(filename))
    
  
     # get the file size from os
@@ -100,14 +92,7 @@ def calcFiles():
     #print(f'Now analyzing ~ {total_frames} frames.')
     progress_bar = tqdm(total_frames, unit=' frames', ncols=80)
  
-   
- 
-    """""
-    print("image path: " + img_path)
-    image =  PhotoImage(file=img_path)
-    image_lbl = Label(root, image=image)
-    image_lbl.grid(row=3, column=3)
-    """""
+
    
 calc_btn = Button(root, text = "Calculate", command = calcFiles)
 calc_btn.grid(row=0,column=2)

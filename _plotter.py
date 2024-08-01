@@ -6,7 +6,7 @@ from pathlib import Path
 from _utils import get_mbit_str, get_pretty_codec_name
 
 
-def plot_results(results, graph_title, graph_filename, user):
+def plot_results(results, graph_title, path):
     seconds, bitrates, keyframes, encoder = results
 
     number_of_keyframes = len(keyframes)
@@ -53,5 +53,5 @@ def plot_results(results, graph_title, graph_filename, user):
 
     # save the plot
     graph_title = Path(graph_title).stem
-    path = "/mnt/c/Users/" + user + "/BitRateHistory/" + graph_title + ".png"
-    plt.savefig(path)
+    plot_path = path + '/' + graph_title + ".png"
+    plt.savefig(plot_path)

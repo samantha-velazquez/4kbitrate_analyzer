@@ -10,14 +10,13 @@ from _file_parser import FileParser
 from _utils import get_framerate_float, get_duration
 
 
-def analyze_bitrate(video_path, user, format='xml'):
+def analyze_bitrate(video_path, path):
     duration = round(float(get_duration(video_path)), 2)
     fps = get_framerate_float(video_path)
     fps_rounded = round(fps)
     cpu_count = multiprocessing.cpu_count()
     total_frames = trunc(int(duration) * fps) + 1
-    path = "/mnt/c/Users/" + user + "/BitRateHistory"
-    output_filename = path + "/" + f'{Path(video_path).stem}.{format}'
+    output_filename = path + "/" + f'{Path(video_path).stem}' + '.json'
     cwd = os.getcwd()
     os.chdir(path)
     file = open(output_filename, 'w', encoding="utf-8")
