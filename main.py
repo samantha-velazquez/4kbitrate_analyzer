@@ -13,14 +13,6 @@ root = Tk()
 root.title("Bit Rate Calculator")
 root.geometry('600x400')
  
-
-# create an entry and variable for the username.
-user_label = Label(root, text = 'Username', font=('calibre',10, 'bold'))
-user_label.grid()
-# user_entry = Entry(root, textvariable=username, font=('calibre',10,'normal'))
-# user_entry.grid(row=0, column=1)
- 
- 
  
 def CurSelet(evt):
     value = str(histbox.get(ACTIVE))
@@ -63,8 +55,7 @@ def calcFiles():
     json = analyze_bitrate(filename, fPath)
     # save json to history
     graph_filename = Path(filename).stem
-    print("graph_filename: " + graph_filename)
-    plot_results(json, filename, graph_filename, user)
+    plot_results(json, graph_filename, fPath)
    
  
     # get the file size from os
@@ -96,4 +87,3 @@ calc_btn = Button(root, text = "Calculate", command = calcFiles)
 calc_btn.grid(row=0,column=2)
  
  
-root.mainloop()
