@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import filedialog
+from tkinter import ttk
 import os
 from _utils import get_duration, get_framerate_float
 from tkinter import PhotoImage
@@ -16,11 +17,12 @@ import matplotlib.image as mpimg
 root = Tk()
 root.title("Bit Rate Calculator")
 root.geometry('600x400')
+button_pressed = 0
 
 
 # create an entry and variable for the username.
-user_label = Label(root, text = 'Username', font=('calibre',10, 'bold'))
-user_label.grid()
+# user_label = Label(root, text = 'Username', font=('calibre',10, 'bold'))
+# user_label.grid()
 # user_entry = Entry(root, textvariable=username, font=('calibre',10,'normal'))
 # user_entry.grid(row=0, column=1)
 
@@ -52,18 +54,23 @@ def CurSelet(evt):
     
 
 histlabel = Label(root, text="History", font=('calibre',10, 'bold'))
-histlabel.grid(column=0, row=3)
+histlabel.grid(column=0, row=4)
 histbox = Listbox(root)
 histbox.grid(column=0, row = 6)
 histbox.bind('<<ListboxSelect>>', CurSelet)
 
 def calcFiles():
     
-    
+    btn_pressed = 0
+
+    loading_label = Label(root, text = "Loading...")
+    loading_label.grid(column = 3, row = 4)
     
     # open file explorer
     filename = filedialog.askopenfilename(initialdir="/Users", title="Select a File", filetypes=(("MP4 File", "*.mp4*"), ("All Files", "*.*")))
     
+    
+
     if(filename[0] == "C"):
         file_no_upath = filename[9:-1]
         inst_1 = file_no_upath.find("/")
@@ -74,7 +81,9 @@ def calcFiles():
         user = file_no_upath[0:inst_1]
         print(user)
     
+    
 
+    btn_pressed = 1
     # set a path for the history
     uPath = "/mnt/c/Users/" + user
     fPath = uPath + "/BitRateHistory"
@@ -84,40 +93,51 @@ def calcFiles():
     
     
 
+    vid_path = os.path.abspath(filename)
+    vid_size = round(os.path.getsize(filename) / 1000000, 1)
+
+    duration = round(float(get_duration(vid_path)))
+    folder_contents = os.listdir(fPath)
+
+    
+
+    
+
     json = analyze_bitrate(filename, user, 'json')
+    btn_pressed = 2
+
     # save json to history
     graph_filename = Path(filename).stem
     print("graph_filename: " + graph_filename)
     plot_results(json, filename, graph_filename, user)
-    img_path = fPath + "/" + graph_filename + ".png"
-
+    btn_pressed = 3
+    
     print(os.path.basename(filename))
     
+    loading_label.grid_forget()
+    fps = get_framerate_float(vid_path)
+    total_frames = trunc(int(duration) * fps) + 1
+    
+    
+       
 
+    
     # get the file size from os
-    vid_path = os.path.abspath(filename)
-    vid_size = round(os.path.getsize(filename) / 1000000, 1)
+    
     # display file size 
     file_size_label = Label(root, text = "Video Size: " + str(vid_size) + " MB")
     file_size_label.grid(column=5, row=3)
     # get the video duration
-    duration = round(float(get_duration(vid_path)))
+    
     # display video duration 
     duration_label = Label(root, text = "Video Duration: " + str(duration) + " seconds")
     duration_label.grid(column=5, row=4)
     # create the history list
-    folder_contents = os.listdir(fPath)
     
+
     for item in folder_contents:
         if(item.endswith(".png")):
             histbox.insert(END, item)
-
-    
-    fps = get_framerate_float(vid_path)
-    total_frames = trunc(int(duration) * fps) + 1
-    #print(f'Now analyzing ~ {total_frames} frames.')
-    progress_bar = tqdm(total_frames, unit=' frames', ncols=80)
-
     
 
     """""
@@ -128,7 +148,7 @@ def calcFiles():
     """""
    
 calc_btn = Button(root, text = "Calculate", command = calcFiles)
-calc_btn.grid(row=0,column=2)
- 
+calc_btn.grid(row=2,column=4)
+
  
 root.mainloop()
