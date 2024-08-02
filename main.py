@@ -65,7 +65,11 @@ def calcFiles():
 
     loading_label = Label(root, text = "Loading...")
     loading_label.grid(column = 3, row = 4)
-    
+    progressbar = ttk.Progressbar(orient=HORIZONTAL, length=160)
+    progressbar.grid(column = 5, row = 8)
+
+    # progressbar.step()
+
     # open file explorer
     filename = filedialog.askopenfilename(initialdir="/Users", title="Select a File", filetypes=(("MP4 File", "*.mp4*"), ("All Files", "*.*")))
     
@@ -102,20 +106,27 @@ def calcFiles():
     
 
     
-    print("filename: " + filename)
-    json = analyze_bitrate(filename, 'json')
+
+    json = analyze_bitrate(filename, user, 'json')
     btn_pressed = 2
 
     # save json to history
-    graph_title = Path(filename).name
     graph_filename = Path(filename).stem
-    print("graph title: " + graph_title)
-    print("graph filename: " + graph_filename)
-
-    plot_results(json, graph_title, graph_filename)
+    print("graph_filename: " + graph_filename)
+    plot_results(json, filename, graph_filename, user)
     btn_pressed = 3
     
+    print(graph_filename)
     print(os.path.basename(filename))
+
+    print(os.path.abspath(graph_filename + ".png"))
+    print(os.path.abspath(graph_filename + ".json"))
+
+    os.chdir(uPath + "/BitRateHistory/")
+
+    print(os.path.abspath(graph_filename + ".png"))
+    print(os.path.abspath(graph_filename + ".json"))
+
     
     loading_label.grid_forget()
     fps = get_framerate_float(vid_path)
