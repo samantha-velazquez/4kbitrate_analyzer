@@ -5,7 +5,7 @@ import numpy as np
 from _utils import get_mbit_str, get_pretty_codec_name
 
 
-def plot_results(results, graph_title, graph_filename):
+def plot_results(results, graph_title, graph_filename, path):
     seconds, bitrates, keyframes, encoder = results
 
     number_of_keyframes = len(keyframes)
@@ -51,4 +51,6 @@ def plot_results(results, graph_title, graph_filename):
                loc='lower right')
 
     # save the plot
-    plt.savefig(f'{graph_filename}.png')
+    abspath = path + "/" + f'{graph_filename}.png'
+    print("plot path: " + abspath)
+    plt.savefig(abspath)
