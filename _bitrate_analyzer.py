@@ -1,22 +1,21 @@
-import io, os
+import io
 from math import trunc
 from pathlib import Path
 import multiprocessing
 import subprocess
 from tqdm import tqdm
+
 from _file_parser import FileParser
 from _utils import get_framerate_float, get_duration
 
 
-def analyze_bitrate(video_path, path):
+def analyze_bitrate(video_path, format='xml'):
     duration = round(float(get_duration(video_path)), 2)
     fps = get_framerate_float(video_path)
     fps_rounded = round(fps)
     cpu_count = multiprocessing.cpu_count()
     total_frames = trunc(int(duration) * fps) + 1
-    output_filename = path + "/" + f'{Path(video_path).stem}' + '.json'
-    cwd = os.getcwd()
-    os.chdir(path)
+    output_filename = f'{Path(video_path).stem}.{format}'
     file = open(output_filename, 'w', encoding="utf-8")
 
     print(f'Now analyzing ~ {total_frames} frames.')
@@ -41,7 +40,6 @@ def analyze_bitrate(video_path, path):
     proc.poll()
     progress_bar.close()
     file.close()
-    os.chdir(cwd)
 
     parser = FileParser()
     result = parser.run(output_filename, format, fps_rounded)

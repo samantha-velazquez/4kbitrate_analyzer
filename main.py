@@ -102,14 +102,17 @@ def calcFiles():
     
 
     
-
-    json = analyze_bitrate(filename, user, 'json')
+    print("filename: " + filename)
+    json = analyze_bitrate(filename, 'json')
     btn_pressed = 2
 
     # save json to history
+    graph_title = Path(filename).name
     graph_filename = Path(filename).stem
-    print("graph_filename: " + graph_filename)
-    plot_results(json, filename, graph_filename, user)
+    print("graph title: " + graph_title)
+    print("graph filename: " + graph_filename)
+
+    plot_results(json, graph_title, graph_filename)
     btn_pressed = 3
     
     print(os.path.basename(filename))
