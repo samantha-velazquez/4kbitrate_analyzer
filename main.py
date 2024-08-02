@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import filedialog, StringVar
+from tkinter import filedialog
 import os, shutil
 from _utils import get_duration, get_framerate_float
 from _bitrate_analyzer import analyze_bitrate
@@ -44,19 +44,22 @@ def calcFiles():
     loading_label = Label(root, text = "Loading...")
     loading_label.grid(column = 3, row = 4)
     
-    # open file explorer
-    filename = filedialog.askopenfilename(initialdir="/Users", title="Select a File", filetypes=(("MP4 File", "*.mp4*"), ("All Files", "*.*")))
-    
+    cwd = os.getcwd()
 
-    if(filename[0] == "C"):
-        file_no_upath = filename[9:-1]
+    if(cwd[0] == "C"):
+        file_no_upath = cwd[9:-1]
         inst_1 = file_no_upath.find("/")
         user = file_no_upath[0:inst_1]
     else:
-        file_no_upath = filename[13:-1]
+        file_no_upath = cwd[13:-1]
         inst_1 = file_no_upath.find("/")
         user = file_no_upath[0:inst_1]
         print(user)
+
+    uPath = "/mnt/c/Users/" + user + "/"
+    
+    # open file explorer
+    filename = filedialog.askopenfilename(initialdir=uPath, title="Select a File", filetypes=(("MP4 File", "*.mp4*"), ("All Files", "*.*")))
 
 
     vid_path = os.path.abspath(filename)
