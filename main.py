@@ -126,13 +126,28 @@ def downloadPNG():
     os.chdir(cwd)
     shutil.copyfile(path, new_path)
 
+def close():
+    path = history_path.get()
+    folder = os.listdir(path)
+    cwd = os.getcwd()
+    os.chdir(history_path.get())
+    for file in folder:
+        os.remove(os.path.abspath(file))
+    os.rmdir(path)
+    os.chdir(cwd)
+    root.destroy()
+
 calc_btn = Button(root, text = "Calculate", command = calcFiles)
 calc_btn.grid(row=2,column=4)
 
-dJSON_btn = Button(root, text="Download JSON", command=downloadJSON)
+dJSON_btn = Button(root, text = "Download JSON", command=downloadJSON)
 dJSON_btn.grid(row=7, column=0)
 
-dPNG_btn = Button(root, text="Download PNG", command=downloadPNG)
+dPNG_btn = Button(root, text = "Download PNG", command=downloadPNG)
 dPNG_btn.grid(row=7, column=1)
+
+quit_btn = Button(root, text = "Exit", background = "red",command = close)
+quit_btn.grid(row=7, column=4)
+
 
 root.mainloop()
