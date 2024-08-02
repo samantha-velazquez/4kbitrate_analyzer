@@ -74,7 +74,6 @@ def calcFiles():
 
 
     hist_path = vid_path.replace(graph_title, "History")
-    print(hist_path)
     if not os.path.exists(hist_path):
         os.mkdir(hist_path)
 
@@ -98,10 +97,10 @@ def calcFiles():
     duration_label.grid(column=5, row=4)
     # create the history list
     
-    folder= os.listdir(hist_path)
+    folder = os.listdir(hist_path)
     for item in folder:
         if(item.endswith(".png")):
-            histbox.insert(TOP, item)
+            histbox.insert(END, item)
     
 def downloadJSON():
     folder= os.listdir(os.getcwd())
@@ -112,15 +111,18 @@ def downloadJSON():
             os.replace(path, new_path)
 
 def downloadPNG():
-    folder= os.listdir(os.getcwd() + "/History")
+    folder = os.listdir(os.getcwd() + '/History')
+    l = len(folder)
+    file = folder[l-1]
+    print(file)
     cwd = os.getcwd()
     os.chdir(os.getcwd() + "/History")
-    for item in folder:
-        if(item.endswith(".png")):
-            path = os.path.abspath(item)
-            new_path = path.replace("Documents/New folder/bitrate-viewer/History", "Downloads")
-            shutil.copyfile(path, new_path)
+    path = os.path.abspath(file)
+    print("old path: " +  path)
+    new_path = path.replace("Documents/New folder/bitrate-viewer/History", "Downloads")
+    print("new path: " + new_path)
     os.chdir(cwd)
+    shutil.copyfile(path, new_path)
 
 calc_btn = Button(root, text = "Calculate", command = calcFiles)
 calc_btn.grid(row=2,column=4)
