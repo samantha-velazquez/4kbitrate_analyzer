@@ -52,5 +52,4 @@ def plot_results(results, graph_title, graph_filename, path):
 
     # save the plot
     abspath = path + "/" + f'{graph_filename}.png'
-    print("plot path: " + abspath)
     plt.savefig(abspath)

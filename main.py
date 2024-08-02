@@ -1,6 +1,6 @@
 from tkinter import *
-from tkinter import filedialog
-import os
+from tkinter import filedialog, StringVar
+import os, shutil
 from _utils import get_duration, get_framerate_float
 from _bitrate_analyzer import analyze_bitrate
 from _plotter import plot_results
@@ -32,8 +32,6 @@ histbox = Listbox(root)
 histbox.grid(column=0, row = 6)
 histbox.bind('<<ListboxSelect>>', CurSelet)
 
-file = StringVar()
-file = ""
 
 def calcFiles():
     for item in os.listdir(os.getcwd()):
@@ -74,6 +72,7 @@ def calcFiles():
     graph_title = Path(filename).name
     graph_filename = Path(filename).stem
 
+
     hist_path = vid_path.replace(graph_title, "History")
     print(hist_path)
     if not os.path.exists(hist_path):
@@ -99,10 +98,10 @@ def calcFiles():
     duration_label.grid(column=5, row=4)
     # create the history list
     
-    folder= os.listdir(os.getcwd())
+    folder= os.listdir(hist_path)
     for item in folder:
         if(item.endswith(".png")):
-            histbox.insert(END, item)
+            histbox.insert(TOP, item)
     
 def downloadJSON():
     folder= os.listdir(os.getcwd())
@@ -113,15 +112,15 @@ def downloadJSON():
             os.replace(path, new_path)
 
 def downloadPNG():
-    print(os.getcwd() + "/History")
     folder= os.listdir(os.getcwd() + "/History")
+    cwd = os.getcwd()
+    os.chdir(os.getcwd() + "/History")
     for item in folder:
         if(item.endswith(".png")):
             path = os.path.abspath(item)
-            print("old path: " + path)
             new_path = path.replace("Documents/New folder/bitrate-viewer/History", "Downloads")
-            print("new path: " + new_path)
-            os.replace(path, new_path)
+            shutil.copyfile(path, new_path)
+    os.chdir(cwd)
 
 calc_btn = Button(root, text = "Calculate", command = calcFiles)
 calc_btn.grid(row=2,column=4)
