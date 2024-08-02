@@ -18,9 +18,11 @@ button_pressed = 0
 
 def CurSelet(evt):
     value = str(histbox.get(ACTIVE))
-    image_path = os.path.abspath(value)
-
+    image_path = history_path.get() +'/' + value
     
+    image = mpimg.imread(image_path)
+    plt.axis('off')
+    plt.grid(False)
     image = mpimg.imread(image_path)
     plt.imshow(image)
     plt.show()
