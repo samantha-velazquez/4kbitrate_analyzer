@@ -39,8 +39,6 @@ def calcFiles():
             os.remove(os.path.abspath(item))
             print("removing..")
 
-    btn_pressed = 0
-
     loading_label = Label(root, text = "Loading...")
     loading_label.grid(column = 3, row = 4)
     
@@ -54,29 +52,27 @@ def calcFiles():
         file_no_upath = cwd[13:-1]
         inst_1 = file_no_upath.find("/")
         user = file_no_upath[0:inst_1]
-        print(user)
 
     uPath = "/mnt/c/Users/" + user + "/"
-    
+
     # open file explorer
     filename = filedialog.askopenfilename(initialdir=uPath, title="Select a File", filetypes=(("MP4 File", "*.mp4*"), ("All Files", "*.*")))
 
 
-    vid_path = os.path.abspath(filename)
     vid_size = round(os.path.getsize(filename) / 1000000, 1)
 
-    duration = round(float(get_duration(vid_path)))
+    duration = round(float(get_duration(filename)))
 
     
     json = analyze_bitrate(filename)
-    btn_pressed = 2
 
     # save json to history
     graph_title = Path(filename).name
     graph_filename = Path(filename).stem
 
 
-    hist_path = vid_path.replace(graph_title, "History")
+    hist_path = filename.replace(graph_title, "History")
+    print("history path: " + hist_path)
     if not os.path.exists(hist_path):
         os.mkdir(hist_path)
 
@@ -84,7 +80,7 @@ def calcFiles():
     btn_pressed = 3
     
     loading_label.grid_forget()
-    fps = get_framerate_float(vid_path)
+    fps = get_framerate_float(filename)
     total_frames = trunc(int(duration) * fps) + 1
     
     
