@@ -32,6 +32,8 @@ histbox = Listbox(root)
 histbox.grid(column=0, row = 6)
 histbox.bind('<<ListboxSelect>>', CurSelet)
 
+history_path = StringVar()
+user_path = StringVar()
 
 def calcFiles():
     for item in os.listdir(os.getcwd()):
@@ -54,6 +56,7 @@ def calcFiles():
         user = file_no_upath[0:inst_1]
 
     uPath = "/mnt/c/Users/" + user + "/"
+    user_path.set(uPath)
 
     # open file explorer
     filename = filedialog.askopenfilename(initialdir=uPath, title="Select a File", filetypes=(("MP4 File", "*.mp4*"), ("All Files", "*.*")))
@@ -71,8 +74,8 @@ def calcFiles():
     graph_filename = Path(filename).stem
 
 
-    hist_path = filename.replace(graph_title, "History")
-    print("history path: " + hist_path)
+    hist_path = uPath + "Documents/History"
+    history_path.set(hist_path)
     if not os.path.exists(hist_path):
         os.mkdir(hist_path)
 
@@ -102,24 +105,24 @@ def calcFiles():
             histbox.insert(END, item)
     
 def downloadJSON():
-    folder= os.listdir(os.getcwd())
+    folder = os.listdir(os.getcwd())
     for item in folder:
         if(item.endswith(".json")):
             path = os.path.abspath(item)
-            new_path = path.replace("Documents/New folder/bitrate-viewer", "Downloads")
+            name = Path(path).name
+            new_path = user_path.get() + "Downloads/" + name
+            print("new path: " + new_path)
             os.replace(path, new_path)
 
 def downloadPNG():
-    folder = os.listdir(os.getcwd() + '/History')
+    history = history_path.get()
+    folder = os.listdir(history)
     l = len(folder)
     file = folder[l-1]
-    print(file)
     cwd = os.getcwd()
-    os.chdir(os.getcwd() + "/History")
+    os.chdir(history)
     path = os.path.abspath(file)
-    print("old path: " +  path)
-    new_path = path.replace("Documents/New folder/bitrate-viewer/History", "Downloads")
-    print("new path: " + new_path)
+    new_path = path.replace("Documents/History", "Downloads")
     os.chdir(cwd)
     shutil.copyfile(path, new_path)
 
