@@ -107,7 +107,7 @@ def calcFiles():
 
     
 
-    json = analyze_bitrate(filename, user, 'json')
+    json = analyze_bitrate(filename)
     btn_pressed = 2
 
     # save json to history
