@@ -11,16 +11,36 @@ import matplotlib.image as mpimg
 
 class Window:
     def __init__(self, tk):
-        self.title = tk.title('Bit Rate Analyzer')
         self.geometry = tk.geometry('600x400')
+        self.historyPath = self.title = tk.title('Bit Rate Analyzer')
+        self.historyPath = StringVar()
+        self.userPath = StringVar()
+        self.getPath()
         self.clearFolder()
         self.createHistory(tk)
 
-    def clearFolder():
+    def clearFolder(self):
         for item in os.listdir(os.getcwd()):
             if (item.endswith(".png") or item.endswith(".json")):
                 os.remove(os.path.abspath(item))
                 print("removing..")
+
+    def getPath(self):
+        cwd = os.getcwd()
+        if(cwd[0] == "C"):
+            file_no_upath = cwd[9:-1]
+            inst_1 = file_no_upath.find("/")
+            user = file_no_upath[0:inst_1]
+        else:
+            file_no_upath = cwd[13:-1]
+            inst_1 = file_no_upath.find("/")
+            user = file_no_upath[0:inst_1]
+
+        self.userPath.set("/mnt/c/Users/" + user + "/")
+        self.historyPath.set(self.userPath.get() + "Documents/History")
+        
+        if not os.path.exists(self.historyPath.get()):
+            os.mkdir(self.historyPath.get())
 
     def createHistory(self, tk):
         def CurSelet(evt):
@@ -39,11 +59,13 @@ class Window:
         self.histbox = Listbox(tk)
         self.histbox.grid(column=0, row = 6)
         self.histbox.bind('<<ListboxSelect>>', CurSelet)
-    
-    def getPath():
-        self.historyPath = StringVar()
-        self.userPath = StringVar()
 
+        folder = os.listdir(self.historyPath.get())
+        for item in folder:
+            if(item.endswith(".png")):
+                self.histbox.insert(END, item)
+
+        
 
 def main():
     root = Tk()
