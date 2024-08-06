@@ -11,14 +11,11 @@ import matplotlib.image as mpimg
 
 class Window:
     def __init__(self, tk):
-        self.geometry = tk.geometry('600x400')
-        self.title = tk.title('Bit Rate Analyzer')
+        self.tk = tk
+        self.geometry = self.tk.geometry('600x400')
+        self.title = self.tk.title('Bit Rate Analyzer')
         self.historyPath = StringVar()
         self.userPath = StringVar()
-        self.getPath()
-        self.clearFolder()
-        self.createHistory(tk)
-        self.calculate(tk)
 
     def clearFolder(self):
         for item in os.listdir(os.getcwd()):
@@ -43,7 +40,7 @@ class Window:
         if not os.path.exists(self.historyPath.get()):
             os.mkdir(self.historyPath.get())
 
-    def createHistory(self, tk):
+    def createHistory(self):
         def CurSelet(evt):
             if self.histbox.size() != 0:
                 value = str(self.histbox.get(ACTIVE))
@@ -56,9 +53,9 @@ class Window:
             else:
                 print("Histbox is empty.")
 
-        self.histlabel = Label(tk, text="History", font=('calibre',10, 'bold'))
+        self.histlabel = Label(self.tk, text="History", font=('calibre',10, 'bold'))
         self.histlabel.grid(column=0, row=4)
-        self.histbox = Listbox(tk)
+        self.histbox = Listbox(self.tk)
         self.histbox.grid(column=0, row = 6)
         self.histbox.bind('<<ListboxSelect>>', CurSelet)
 
@@ -67,24 +64,27 @@ class Window:
             if(item.endswith(".png")):
                 self.histbox.insert(END, item)
 
-    def calculate(self, tk):
-        def getFileStats(tk):
-            loading_label = Label(tk, text = "Loading...")
-            loading_label.grid(column = 3, row = 4)
+    def calculate(self):
+        def getStats(evt): 
+            print("clicked")
             # open file explorer
-            filename = filedialog.askopenfilename(initialdir=self.historyPath.get(), 
+            filename = filedialog.askopenfilename(initialdir=self.userPath.get(), 
                                                     title="Select a File", 
                                                     filetypes=(("MP4 File", "*.mp4*"), 
                                                                 ("All Files", "*.*")))
+            
+            loading_label = Label(self.tk, text = "Loading...")
+            loading_label.grid(column = 3, row = 4)
+
             vid_size = round(os.path.getsize(filename) / 1000000, 1)
             duration = round(float(get_duration(filename)))
- 
+
             # display file size 
-            file_size_label = Label(tk, text = "Video Size: " + str(vid_size) + " MB")
+            file_size_label = Label(self.tk, text = "Video Size: " + str(vid_size) + " MB")
             file_size_label.grid(column=5, row=3)
 
             # display the video duration
-            duration_label = Label(tk, text = "Video Duration: " + str(duration) + " seconds")
+            duration_label = Label(self.tk, text = "Video Duration: " + str(duration) + " seconds")
             duration_label.grid(column=5, row=4)
 
             # json holds the function analyze bitrate
@@ -97,15 +97,18 @@ class Window:
             loading_label.grid_forget()
 
             # add new plots to history.
-
-        self.calcBtn = Button(tk, text = "Calculate", command = getFileStats(tk))
+        self.calcBtn = Button(self.tk, text = "Calculate")
+        self.calcBtn.bind('<Button-1>',getStats)
         self.calcBtn.grid(row=2,column=4)
-    
 
 
 def main():
     root = Tk()
     window = Window(root)
+    window.getPath()
+    window.clearFolder()
+    window.createHistory()
+    window.calculate()
     root.mainloop()
 
 if __name__ == "__main__":
