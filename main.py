@@ -20,6 +20,9 @@ class Window:
 
         self.historyPath = StringVar()
         self.userPath = StringVar()
+        self.calc_var = 0
+        self.file_size_label = Label(self.tk)
+        self.duration_label = Label(self.tk)
 
     def clearFolder(self):
         for item in os.listdir(os.getcwd()):
@@ -78,35 +81,53 @@ class Window:
                 self.histbox.insert(END, item)
 
     def calculate(self):
-        calc_var = 0
         def getStats(evt): 
             print("clicked")
-            calc_var = 1
+            self.calc_var+=1
+            print(self.calc_var)
             # open file explorer
             
             loading_label = Label(self.tk, text = "Loading...")
-            loading_label.pack(side=RIGHT, fill=BOTH)
+            loading_label.pack(side=BOTTOM, fill=BOTH)
             filename = filedialog.askopenfilename(initialdir=self.userPath.get(), 
                                                     title="Select a File", 
                                                     filetypes=(("MP4 File", "*.mp4*"), 
                                                                 ("All Files", "*.*")))
             
-            
-
             vid_size = round(os.path.getsize(filename) / 1000000, 1)
             duration = round(float(get_duration(filename)))
-            file_size_label = Label(self.tk, text = "Video Size: " + str(vid_size) + " MB")
-            duration_label = Label(self.tk, text = "Video Duration: " + str(duration) + " seconds")
-            if calc_var > 1:
+            self.file_size_label.config(text = "Video Size: " + str(vid_size) + " MB")
+            self.duration_label.config(text = "Video Duration: " + str(duration) + " seconds")
+
+           
+            '''if self.calc_var > 1:
                 file_size_label.pack_forget()
-                duration_label.pack_forget()
+                duration_label.pack_forget()'''
+                
+            self.file_size_label.pack(ipadx=60, ipady=10)
+                #side=RIGHT, fill=BOTH
+                # display the video duration
+                
+            self.duration_label.pack(ipadx=60, ipady=10)
+
             # display file size 
-            
-            file_size_label.pack(ipadx=60, ipady=10)
-#side=RIGHT, fill=BOTH
-            # display the video duration
-            
-            duration_label.pack(ipadx=60, ipady=10)
+            '''if self.calc_var == 1:
+                
+                
+                self.file_size_label.pack(ipadx=60, ipady=10)
+                #side=RIGHT, fill=BOTH
+                # display the video duration
+                
+                self.duration_label.pack(ipadx=60, ipady=10)
+            else:
+                self.file_size_label.pack_forget()
+                self.duration_label.pack_forget()
+                
+                self.file_size_label.pack(ipadx=60, ipady=10)
+                #side=RIGHT, fill=BOTH
+                # display the video duration
+                
+                self.duration_label.pack(ipadx=60, ipady=10)'''
 #side=BOTTOM, pady = 10
             # json holds the function analyze bitrate
             json = analyze_bitrate(filename)
@@ -115,7 +136,6 @@ class Window:
 
             # creates the graph image file
             plot_results(json, graph_title, graph_filename, self.historyPath.get())
-            calc_var +=1    
             loading_label.pack_forget()
 
             # add new plots to history.
